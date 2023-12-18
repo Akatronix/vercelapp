@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Covid19 system app</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <a href="index.html"
+            ><img src="{% static 'logo.jpg' %}" alt="logo"
+          /></a>
+        </div>
+
+        <h1>Covid19 monitoring System</h1>
+      </nav>
+    </header>
+    <main>
+      <div class="box">
+        <article class="ecg"></article>
+      </div>
+
+      <article>
+        <div class="heart">
+          <h2>HeartBeat</h2>
+          <i class="fa-solid fa-heart"></i>
+        </div>
+        <span>PR[bpm]</span>
+        <h3 id="heart"></h3>
+      </article>
+
+      <article>
+        <h2>SpO2 <span class="oxygen">%</span></h2>
+        <h3 id="oxygen"></h3>
+      </article>
+
+      <article>
+        <h2>Temperature <span class="degree">°C</span></h2>
+        <h3 id="temper"></h3>
+        <i class="fa-solid fa-temperature-high"></i>
+      </article>
+    </main>
+
+    <script>
+      $(document).ready(function () {
+        setInterval(function () {
+          $.ajax({
+            type: "GET",
+            url: "{% url 'getData' %}",
+
+            success: function (response) {
+              $("#heart").empty();
+
+              for (var key in response.sensorvalues) {
+                let heart_beat = response.sensorvalues[key].rate;
+
+                $("#heart").append(heart_beat);
+              }
+
+              $("#oxygen").empty();
+
+              for (var key in response.sensorvalues) {
+                let heart_beat = response.sensorvalues[key].oxygen;
+
+                $("#oxygen").append(heart_beat);
+              }
+
+              $("#temper").empty();
+
+              for (var key in response.sensorvalues) {
+                let heart_beat = response.sensorvalues[key].temperature;
+
+                $("#temper").append(heart_beat);
+              }
+            },
+
+            error: function (response) {
+              console.log("an error occured");
+            },
+          });
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
